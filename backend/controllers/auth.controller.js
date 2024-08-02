@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
-export const signup = async (req, res) => {
+export const signup = async (req, res,next) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -34,6 +34,6 @@ export const signup = async (req, res) => {
       massage: "Signup successfull",
     });
   } catch (error) {
-    res.status(500).json(error.massage);
+    next(error)
   }
 };
