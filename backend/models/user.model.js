@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema(
             required:true
         },
         avatar:{
-            type:String,
-            default:'https://kerma.widyatama.ac.id/wp-content/uploads/2021/05/blank-profile-picture-973460_1280-850x850.png'
-        }
+            type: String,
+            default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+          },
     },
     {timestamps:true}
 );
