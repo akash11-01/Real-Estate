@@ -1,5 +1,43 @@
+import User from "../models/user.model.js"
+import { errorHandler } from "../utils/error.js"
+import bcryptjs from 'bcryptjs' 
+
+
 export const testApi = async (req,res) =>{
     res.json({
         massage:"Api is working"
     })
+}
+
+
+export const updateUser = async(req,res,next) => {
+    if(req.user.id !== req.params.id) return next(errorHandler(401,'You can update only your profile'))
+    
+    try {
+        if(req.body.password){
+            req.body.password = bcryptjs.hashSync(req.body.password,10);
+        }
+    
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            {
+                // set updates only those things which are updated
+                $set:{
+                    username:req.body.username,
+                    email:req.body.email,
+                    password:req.body.password,
+                    avatar:req.body.avatar
+                },
+            },
+            {
+                new:true  // this will create and save the user
+            }
+        )
+    
+        const {password,...rest} = updatedUser._doc
+    
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error)
+    }
 }
