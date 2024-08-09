@@ -31,6 +31,7 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingErrors, setShowListingErrors] = useState(false)
   const [userListings, setUserListings] = useState([]);
+  const [listingDeleteError,setListingDeleteError] = useState(false);
   const [fileUploadError, setFileUploadError] = useState(false);
   const dispatch = useDispatch();
   // console.log(formData);
@@ -64,6 +65,7 @@ export default function Profile() {
       }
     );
   }
+
 
   const handleChange = async (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -152,6 +154,30 @@ export default function Profile() {
       setShowListingErrors(true);
     }
   }
+
+  
+  const handleListingDelete = async (listingId)=>{
+    try {
+      setListingDeleteError(false);
+      const res = await fetch(`/api/listing/delete/${listingId}`,
+        {
+          method:'DELETE'
+        }
+      )
+
+      const data = res.json();
+      if(data.success === false){
+        setListingDeleteError(true);
+        return;
+      }
+
+      setUserListings((prev)=>prev.filter((listing) => listing._id !== listingId))
+    } catch (error) {
+      setListingDeleteError(true);
+    }
+  }
+
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -236,7 +262,7 @@ export default function Profile() {
             </Link>
 
             <div className='flex flex-col items-center'>
-              <button className='text-red-700 uppercase'>Delete</button>
+              <button onClick={()=>handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
               <button className='text-green-700 uppercase'>Edit</button>
             </div>
           </div>
