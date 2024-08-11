@@ -246,7 +246,7 @@ export default function Profile() {
 
       {userListings && userListings.length > 0 && 
         userListings.map((listing)=>{
-          console.log(listing.imageUrls);
+          // console.log(listing.imageUrls);
           
           return(
             <div key={listing._id} className="border rounded-lg p-3 flex 
@@ -263,7 +263,10 @@ export default function Profile() {
 
             <div className='flex flex-col items-center'>
               <button onClick={()=>handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
-              <button className='text-green-700 uppercase'>Edit</button>
+
+              <Link to={`/update-listing/${listing._id}`}>
+                <button className='text-green-700 uppercase'>Edit</button>
+              </Link>
             </div>
           </div>
           )          
