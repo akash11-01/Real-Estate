@@ -63,3 +63,52 @@ export const getListing = async(req,res,next)=>{
         next(error)
     }
 }
+
+
+export const getListings = async(req,res,next)=>{
+    try {
+        const limit = parseInt(req.query.limit) || 9;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+
+        const offer = req.query.offer;
+        if(offer === undefined || offer === 'false'){ // if offer is not selected
+            offer = { $in : [false,true] }      // then we have to show all the result hence we are 
+                                                // finding here by considering offer as true and false both
+        }
+
+        const furnished = req.query.furnished;
+        if(furnished === undefined || furnished === 'false'){
+            furnished = { $in : [false,true]};
+        }
+
+        const parking = req.query.parking;
+        if(parking === undefined || parking === 'false'){
+            parking = { $in : [false,true]};
+        }
+
+        const type = req.query.type;
+        if(type === undefined || type === 'all'){
+            type = { $in : ['sale','rent']};
+        }
+
+        const searchTerm = req.query.searchTerm || '';
+        const sort = req.query.sort || 'createdAt';
+        const order = req.query.order || 'desc';
+        
+        const listings = await Listing.find({
+            name:{$regex : searchTerm, $options:'i'}, // here option i means search is not case sensitivr
+            offer,
+            furnished,
+            parking,
+            type      
+        })
+        .sort({[sort]:order})
+        .limit(limit)
+        .skip(startIndex)
+
+        return res.status(200).json(listings);
+
+    } catch (error) {
+        next(error)
+    }
+}
