@@ -70,23 +70,23 @@ export const getListings = async(req,res,next)=>{
         const limit = parseInt(req.query.limit) || 9;
         const startIndex = parseInt(req.query.startIndex) || 0;
 
-        const offer = req.query.offer;
+        let offer = req.query.offer;
         if(offer === undefined || offer === 'false'){ // if offer is not selected
             offer = { $in : [false,true] }      // then we have to show all the result hence we are 
                                                 // finding here by considering offer as true and false both
         }
 
-        const furnished = req.query.furnished;
+        let furnished = req.query.furnished;
         if(furnished === undefined || furnished === 'false'){
             furnished = { $in : [false,true]};
         }
 
-        const parking = req.query.parking;
+        let parking = req.query.parking;
         if(parking === undefined || parking === 'false'){
             parking = { $in : [false,true]};
         }
 
-        const type = req.query.type;
+        let type = req.query.type;
         if(type === undefined || type === 'all'){
             type = { $in : ['sale','rent']};
         }
