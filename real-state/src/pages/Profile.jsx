@@ -33,6 +33,7 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const [listingDeleteError,setListingDeleteError] = useState(false);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [showListing,setShowListing] = useState(false);
   const dispatch = useDispatch();
   // console.log(formData);
   
@@ -137,7 +138,14 @@ export default function Profile() {
   }
 
 
+  const handelHideListing = ()=>{
+    setShowListing(false)
+    setUserListings([]);
+  }
+
+
   const handleShowListing = async () => {
+    setShowListing(true)
     try {
       setShowListingErrors(false);
       const res = await fetch(`/api/user/listing/${currentUser._id}`);
@@ -152,6 +160,7 @@ export default function Profile() {
       setUserListings(data);
     } catch (error) {
       setShowListingErrors(true);
+      setUserListings(null)
     }
   }
 
@@ -241,7 +250,11 @@ export default function Profile() {
         {updateSuccess ? 'user updated successfully' : ''}
       </p>
 
-      <button onClick={handleShowListing} className='text-green-700 w-full '>Show listing</button>
+      {
+        showListing 
+          ? <button onClick={handelHideListing} className='text-green-600 w-full mb-3'>Hide listing</button>
+          : <button onClick={handleShowListing} className='text-green-700 w-full '>Show listing</button>
+      }
       <p>{showListingErrors ? 'Error in showing listings': ''}</p>
 
       {userListings && userListings.length > 0 && 
