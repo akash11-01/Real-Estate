@@ -7,23 +7,23 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { 
-  deleteUserFailure, 
-  deleteUserStart, 
-  deleteUserSuccess, 
-  signOutFailure, 
-  signOutStart, 
-  signOutSuccess, 
-  updateUserFailure, 
-  updateUserStart, 
+import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
+  updateUserFailure,
+  updateUserStart,
   updateUserSuccess,
 
- }
-from '../redux/user/userSlice';
-import {Link} from 'react-router-dom'
+}
+  from '../redux/user/userSlice';
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
-  const { currentUser, error,loading } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined)
   const fileRef = useRef(null);
   const [filePerc, setFilePerc] = useState(0);
@@ -31,12 +31,12 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingErrors, setShowListingErrors] = useState(false)
   const [userListings, setUserListings] = useState([]);
-  const [listingDeleteError,setListingDeleteError] = useState(false);
+  const [listingDeleteError, setListingDeleteError] = useState(false);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [showListing,setShowListing] = useState(false);
+  const [showListing, setShowListing] = useState(false);
   const dispatch = useDispatch();
   // console.log(formData);
-  
+
 
   useEffect(() => {
     if (file) {
@@ -55,7 +55,7 @@ export default function Profile() {
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFilePerc(Math.round(progress));
-        console.log(progress);
+        // console.log(progress);
       },
       (error) => {
         setFileUploadError(true);
@@ -83,31 +83,31 @@ export default function Profile() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body:JSON.stringify(formData)
+          body: JSON.stringify(formData)
         })
-        const data = await res.json();
-        if(data.success === false){
-          dispatch(updateUserFailure(data.message));
-          return;
-        }
-        dispatch(updateUserSuccess(data));
-        setUpdateSuccess(true);
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message))
     }
   }
 
 
-  const handleDeleteUser = async()=>{
+  const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart())
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE'
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE'
       })
 
       const data = await res.json();
 
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
@@ -120,13 +120,13 @@ export default function Profile() {
   }
 
 
-  const handleSignOut = async(req,res) =>{
+  const handleSignOut = async (req, res) => {
     try {
       dispatch(signOutStart());
       const res = await fetch('/api/auth/signout');
-      const data  = await res.json();
+      const data = await res.json();
 
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(signOutFailure(data.message));
         return;
       }
@@ -138,7 +138,7 @@ export default function Profile() {
   }
 
 
-  const handelHideListing = ()=>{
+  const handelHideListing = () => {
     setShowListing(false)
     setUserListings([]);
   }
@@ -152,7 +152,7 @@ export default function Profile() {
 
       const data = await res.json();
 
-      if(data.success === false){
+      if (data.success === false) {
         setShowListingErrors(true)
         return;
       }
@@ -164,23 +164,23 @@ export default function Profile() {
     }
   }
 
-  
-  const handleListingDelete = async (listingId)=>{
+
+  const handleListingDelete = async (listingId) => {
     try {
       setListingDeleteError(false);
       const res = await fetch(`/api/listing/delete/${listingId}`,
         {
-          method:'DELETE'
+          method: 'DELETE'
         }
       )
 
       const data = res.json();
-      if(data.success === false){
+      if (data.success === false) {
         setListingDeleteError(true);
         return;
       }
 
-      setUserListings((prev)=>prev.filter((listing) => listing._id !== listingId))
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
     } catch (error) {
       setListingDeleteError(true);
     }
@@ -231,7 +231,7 @@ export default function Profile() {
           className='border p-3 rounded-lg'
           onChange={handleChange} />
 
-        <button  className='bg-slate-700 text-white rounded-lg
+        <button className='bg-slate-700 text-white rounded-lg
          p-3 hover:opacity-95 disabled:opacity-80'>
           UPDATE
         </button>
@@ -251,38 +251,38 @@ export default function Profile() {
       </p>
 
       {
-        showListing 
-          ? <button onClick={handelHideListing} className='text-green-600 w-full mb-3'>Hide listing</button>
-          : <button onClick={handleShowListing} className='text-green-700 w-full '>Show listing</button>
+        showListing
+          ? <button onClick={handelHideListing} className='text-green-600 w-full'>Hide listing</button>
+          : <button onClick={handleShowListing} className='text-green-700 w-full'>Show listing</button>
       }
-      <p>{showListingErrors ? 'Error in showing listings': ''}</p>
+      <p>{showListingErrors ? 'Error in showing listings' : ''}</p>
 
-      {userListings && userListings.length > 0 && 
-        userListings.map((listing)=>{
+      {userListings && userListings.length > 0 &&
+        userListings.map((listing) => {
           // console.log(listing.imageUrls);
-          
-          return(
+
+          return (
             <div key={listing._id} className="border rounded-lg p-3 flex 
           justify-between items-center gap-4">
-            <Link to={`/listing/${listing._id}`}>
-              <img src={listing.imageUrls} alt="listing cover" 
-               className='h-16 w-16 object-contain'
-              />
-            </Link>
-
-            <Link className='text-slate-700 font-semibold flex-1 truncate hover:underline' to={`/listing/${listing._id}`}>
-              <p>{listing.name}</p>
-            </Link>
-
-            <div className='flex flex-col items-center'>
-              <button onClick={()=>handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
-
-              <Link to={`/update-listing/${listing._id}`}>
-                <button className='text-green-700 uppercase'>Edit</button>
+              <Link to={`/listing/${listing._id}`}>
+                <img src={listing.imageUrls} alt="listing cover"
+                  className='h-16 w-16 object-contain'
+                />
               </Link>
+
+              <Link className='text-slate-700 font-semibold flex-1 truncate hover:underline' to={`/listing/${listing._id}`}>
+                <p>{listing.name}</p>
+              </Link>
+
+              <div className='flex flex-col items-center'>
+                <button onClick={() => handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
+
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className='text-green-700 uppercase'>Edit</button>
+                </Link>
+              </div>
             </div>
-          </div>
-          )          
+          )
         })
       }
 
